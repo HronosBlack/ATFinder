@@ -1,0 +1,3 @@
+[submodule "ATLib"]
+    path = ATLib
+    url = https://github.com/HronosBlack/ATLibrary
