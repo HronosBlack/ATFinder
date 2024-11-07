@@ -1,9 +1,12 @@
+"""
+Основной скрипт приложения
+"""
 import wx
 
-from main_frame import frmMain
+from assets.forms.mainform import MainForm
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app = wx.App(False)
-    frame = frmMain()
+    mainForm = MainForm(parent=None, id=wx.ID_ANY, title="Поиск по онлайн-библиотеке Author.Today")
     app.MainLoop()
