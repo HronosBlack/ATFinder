@@ -13,6 +13,8 @@ class MainForm(wx.Frame):
         wx.Frame.__init__(self, **kwargs)
         self.SetIcon(wx.Icon("assets/img/icon.png", wx.BITMAP_TYPE_PNG))
         
+        self.atauth = False
+        
         # Блок главного меню приложения
         menubar = wx.MenuBar()
         
@@ -38,7 +40,20 @@ class MainForm(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnCloseMenuClick, self.exitMenuItem)
         self.fileMenu.Append(self.exitMenuItem)
         
+        self.searchMenu = wx.Menu()
+        self.searchMenu
+        
+        self.searchMenuItem = wx.MenuItem(
+            None,
+            wx.ID_ANY,
+            "Поиск...",
+            "Открыть панель поиска произведений"
+        )
+        self.Bind(wx.EVT_MENU, self.OnAuthMenuClick, self.searchMenuItem)
+        self.searchMenu.Append(self.searchMenuItem)
+        
         menubar.Append(self.fileMenu, "Файл")
+        menubar.Append(self.searchMenu, "Поиск")
         self.SetMenuBar(menubar)
         
         self.mainPanel = wx.Panel(self, wx.ID_ANY)
