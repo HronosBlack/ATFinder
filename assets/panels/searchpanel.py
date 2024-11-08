@@ -30,11 +30,24 @@ class SearchPanel(wx.Panel):
         self.accessList = wx.ComboBox(self)
         for access in self.at.AllAccesses:
             accessItem = self.accessList.Append(str(access), access)
-        self.accessList.Bind(wx.EVT_COMBOBOX, self.OnCheckAccess)
         self.accessList.Select(0)
+        self.accessList.Bind(wx.EVT_COMBOBOX, self.OnCheckAccess)
         accessSizer.Add(self.accessList, 3, wx.ALL | wx.EXPAND, 5)
         
+        formatSizer = wx.BoxSizer(wx.HORIZONTAL)
+        
+        formatLabel = wx.StaticText(self, label="Формат:")
+        formatSizer.Add(formatLabel, 2, wx.ALL | wx.EXPAND, 5)
+        
+        self.formatList = wx.ComboBox(self)
+        for format in self.at.AllFormat:
+            formatItem = self.formatList.Append(str(format), format)
+        self.formatList.Select(0)
+        self.formatList.Bind(wx.EVT_COMBOBOX, self.OnCheckFormat)
+        formatSizer.Add(self.formatList, 3, wx.ALL | wx.EXPAND, 5)
+        
         detailSizer.Add(accessSizer, 0, wx.ALL | wx.EXPAND, 0)
+        detailSizer.Add(formatSizer, 0, wx.ALL | wx.EXPAND, 0)
         detailSizer.Add((0, 0), 10, 0, 0)
         
         mainSizer.Add(detailSizer, 3, wx.ALL | wx.EXPAND, 0)
@@ -46,6 +59,10 @@ class SearchPanel(wx.Panel):
     def OnCheckAccess(self, event) -> None:
         access = event.GetClientData()
         print(str(access))
+        
+    def OnCheckFormat(self, event) -> None:
+        format = event.GetClientData()
+        print(str(format))
         
     def LoadGenres(self) -> None:
         rootItem: wxc.GenericTreeItem = self.treeGenres.AddRoot("Жанры:")
