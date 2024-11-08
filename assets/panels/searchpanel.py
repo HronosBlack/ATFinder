@@ -2,7 +2,7 @@ import wx
 import wx.lib.agw.customtreectrl as wxc
 
 from ATLibrary.core import AT
-from ATLibrary.objects import Genre
+from ATLibrary.objects import Genre, Access
 
 
 class SearchPanel(wx.Panel):
@@ -17,20 +17,35 @@ class SearchPanel(wx.Panel):
         
         self.treeGenres = wxc.CustomTreeCtrl(self)
         self.LoadGenres()
-        mainSizer.Add(self.treeGenres, 1, wx.ALL | wx.EXPAND, 5)
+        self.treeGenres.ExpandAll()
+        mainSizer.Add(self.treeGenres, 2, wx.ALL | wx.EXPAND, 5)
         
         detailSizer = wx.BoxSizer(wx.VERTICAL)
         
-        detailSizer.Add((0, 0), 0, 0, 0)
-        detailSizer.Add((0, 0), 0, 0, 0)
-        detailSizer.Add((0, 0), 0, 0, 0)
-        detailSizer.Add((0, 0), 0, 0, 0)
+        accessSizer = wx.BoxSizer(wx.HORIZONTAL)
         
-        mainSizer.Add(detailSizer, 3, wx.ALL | wx.EXPAND, 5)
+        accessLabel = wx.StaticText(self, label="Доступ:")
+        accessSizer.Add(accessLabel, 2, wx.EXPAND | wx.ALL, 5)
+        
+        self.accessList = wx.ComboBox(self)
+        for access in self.at.AllAccesses:
+            accessItem = self.accessList.Append(str(access), access)
+        self.accessList.Bind(wx.EVT_COMBOBOX, self.OnCheckAccess)
+        self.accessList.Select(0)
+        accessSizer.Add(self.accessList, 3, wx.ALL | wx.EXPAND, 5)
+        
+        detailSizer.Add(accessSizer, 0, wx.ALL | wx.EXPAND, 0)
+        detailSizer.Add((0, 0), 10, 0, 0)
+        
+        mainSizer.Add(detailSizer, 3, wx.ALL | wx.EXPAND, 0)
         
         self.SetSizer(mainSizer)
         
         self.Layout()
+        
+    def OnCheckAccess(self, event) -> None:
+        access = event.GetClientData()
+        print(str(access))
         
     def LoadGenres(self) -> None:
         rootItem: wxc.GenericTreeItem = self.treeGenres.AddRoot("Жанры:")
