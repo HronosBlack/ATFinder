@@ -3,7 +3,7 @@ import wx
 from wx.lib.pubsub import pub
 from assets.forms.authdialog import AuthDialog
 from ATLibrary.core import AT
-from lib.config import Config
+from applib.config import Config
 
 
 class MainForm(wx.Frame):
