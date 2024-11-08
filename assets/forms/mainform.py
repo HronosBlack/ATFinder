@@ -2,6 +2,7 @@ import wx
 
 from wx.lib.pubsub import pub
 from assets.forms.authdialog import AuthDialog
+from assets.panels.searchpanel import SearchPanel
 from ATLibrary.core import AT
 from applib.config import Config
 
@@ -41,7 +42,6 @@ class MainForm(wx.Frame):
         self.fileMenu.Append(self.exitMenuItem)
         
         self.searchMenu = wx.Menu()
-        self.searchMenu
         
         self.searchMenuItem = wx.MenuItem(
             None,
@@ -49,8 +49,9 @@ class MainForm(wx.Frame):
             "Поиск...",
             "Открыть панель поиска произведений"
         )
-        self.Bind(wx.EVT_MENU, self.OnAuthMenuClick, self.searchMenuItem)
+        self.Bind(wx.EVT_MENU, self.OnSearchMenuClick, self.searchMenuItem)
         self.searchMenu.Append(self.searchMenuItem)
+        self.__set_enabled__()
         
         menubar.Append(self.fileMenu, "Файл")
         menubar.Append(self.searchMenu, "Поиск")
@@ -85,11 +86,21 @@ class MainForm(wx.Frame):
         authDlg = AuthDialog(parent=self, title="Авторизация в AT", username=self.conf.Username)
         authDlg.ShowModal()
         
+    def OnSearchMenuClick(self, event) -> None:
+        self.mainPanel.Destroy()
+        self.mainPanel = SearchPanel(parent=self, at=self.at)
+        self.Layout()
+        self.Fit()
+        
     def OnLogin(self, userData, arg2=None) -> None:
         answer = self.at.Login(userData['userName'], userData['userPass'])
         if 'token' in answer:
             self.conf.Username = userData['userName']
+            self.atauth = True
+            self.__set_enabled__()
         else:
+            self.atauth = False
+            self.__set_enabled__()
             errorData = ""
             if 'invalidFields' in answer:
                 errorData += f"\n\tОшибки:"
@@ -104,3 +115,6 @@ class MainForm(wx.Frame):
                 style=wx.OK | wx.ICON_ERROR | wx.CENTER)
             errorMessage.ShowModal()
             self.OnAuthMenuClick()
+
+    def __set_enabled__(self) -> None:
+        self.searchMenuItem.Enable(self.atauth)
