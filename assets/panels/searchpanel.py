@@ -51,6 +51,8 @@ class SearchPanel(wx.Panel):
         rootItem: wxc.GenericTreeItem = self.treeGenres.AddRoot("Жанры:")
         allGenres = self.at.AllGenres
         self.__add_genres_to_tree__(allGenres, rootItem)
+        mti = self.at.sample()
+        print(mti)
         
     def __add_genres_to_tree__(self, genres: list[Genre], parent: wxc.GenericTreeItem) -> None:
         for genre in genres:
