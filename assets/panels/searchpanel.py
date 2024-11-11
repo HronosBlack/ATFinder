@@ -17,7 +17,6 @@ class SearchPanel(wx.Panel):
         
         self.treeGenres = wxc.CustomTreeCtrl(self)
         self.LoadGenres()
-        # self.treeGenres.ExpandAll()
         self.treeGenres.Expand(self.treeGenres.GetRootItem())
         mainSizer.Add(self.treeGenres, 2, wx.ALL | wx.EXPAND, 5)
         
