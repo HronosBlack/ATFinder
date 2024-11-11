@@ -17,7 +17,8 @@ class SearchPanel(wx.Panel):
         
         self.treeGenres = wxc.CustomTreeCtrl(self)
         self.LoadGenres()
-        self.treeGenres.ExpandAll()
+        # self.treeGenres.ExpandAll()
+        self.treeGenres.Expand(self.treeGenres.GetRootItem())
         mainSizer.Add(self.treeGenres, 2, wx.ALL | wx.EXPAND, 5)
         
         detailSizer = wx.BoxSizer(wx.VERTICAL)
@@ -29,7 +30,7 @@ class SearchPanel(wx.Panel):
         
         self.accessList = wx.ComboBox(self)
         for access in self.at.AllAccesses:
-            accessItem = self.accessList.Append(str(access), access)
+            self.accessList.Append(str(access), access)
         self.accessList.Select(0)
         self.accessList.Bind(wx.EVT_COMBOBOX, self.OnCheckAccess)
         accessSizer.Add(self.accessList, 3, wx.ALL | wx.EXPAND, 5)
@@ -41,11 +42,24 @@ class SearchPanel(wx.Panel):
         
         self.formatList = wx.ComboBox(self)
         for format in self.at.AllFormat:
-            formatItem = self.formatList.Append(str(format), format)
+            self.formatList.Append(str(format), format)
         self.formatList.Select(0)
         self.formatList.Bind(wx.EVT_COMBOBOX, self.OnCheckFormat)
         formatSizer.Add(self.formatList, 3, wx.ALL | wx.EXPAND, 5)
         
+        workFormSizer = wx.BoxSizer(wx.HORIZONTAL)
+        
+        workFormLabel = wx.StaticText(self, label="Форма произведения:")
+        workFormSizer.Add(workFormLabel, 2, wx.ALL | wx.EXPAND, 5)
+        
+        self.workFormList = wx.ComboBox(self)
+        for workForm in self.at.AllWorkForms:
+            self.workFormList.Append(str(workForm), workForm)
+        self.workFormList.Select(0)
+        self.workFormList.Bind(wx.EVT_COMBOBOX, self.OnCheckWorkForm)
+        workFormSizer.Add(self.workFormList, 3, wx.ALL | wx.EXPAND, 5)
+        
+        detailSizer.Add(workFormSizer, 0, wx.ALL | wx.EXPAND, 0)
         detailSizer.Add(accessSizer, 0, wx.ALL | wx.EXPAND, 0)
         detailSizer.Add(formatSizer, 0, wx.ALL | wx.EXPAND, 0)
         detailSizer.Add((0, 0), 10, 0, 0)
@@ -58,11 +72,15 @@ class SearchPanel(wx.Panel):
         
     def OnCheckAccess(self, event) -> None:
         access = event.GetClientData()
-        print(str(access))
+        print(str(access) + f"\t{access.UrlPrefix}={access.UrlKey}")
         
     def OnCheckFormat(self, event) -> None:
         format = event.GetClientData()
-        print(str(format))
+        print(str(format) + f"\t{format.UrlPrefix}={format.UrlKey}")
+        
+    def OnCheckWorkForm(self, event) -> None:
+        workForm = event.GetClientData()
+        print(str(workForm) + f"\t{workForm.UrlPrefix}={workForm.UrlKey}")
         
     def LoadGenres(self) -> None:
         rootItem: wxc.GenericTreeItem = self.treeGenres.AddRoot("Жанры:")
