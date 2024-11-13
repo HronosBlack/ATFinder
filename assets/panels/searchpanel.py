@@ -2,7 +2,7 @@ import wx
 import wx.lib.agw.customtreectrl as wxc
 
 from ATLibrary.core import AT
-from ATLibrary.objects import Genre, Access
+from ATLibrary.objects import Genre, Access, State
 
 
 class SearchPanel(wx.Panel):
@@ -58,9 +58,22 @@ class SearchPanel(wx.Panel):
         self.workFormList.Bind(wx.EVT_COMBOBOX, self.OnCheckWorkForm)
         workFormSizer.Add(self.workFormList, 3, wx.ALL | wx.EXPAND, 5)
         
+        workStateSizer = wx.BoxSizer(wx.HORIZONTAL)
+        
+        workStateLabel = wx.StaticText(self, label="Статус произведения:")
+        workStateSizer.Add(workStateLabel, 2, wx.ALL | wx.EXPAND, 5)
+        
+        self.workStateList = wx.ComboBox(self)
+        for workState in self.at.AllStates:
+            self.workStateList.Append(str(workState), workState)
+        self.workStateList.Select(0)
+        self.workStateList.Bind(wx.EVT_COMBOBOX, self.OnCheckState)
+        workStateSizer.Add(self.workStateList, 3, wx.ALL | wx.EXPAND, 5)
+        
         detailSizer.Add(workFormSizer, 0, wx.ALL | wx.EXPAND, 0)
         detailSizer.Add(accessSizer, 0, wx.ALL | wx.EXPAND, 0)
         detailSizer.Add(formatSizer, 0, wx.ALL | wx.EXPAND, 0)
+        detailSizer.Add(workStateSizer, 0, wx.ALL | wx.EXPAND, 0)
         detailSizer.Add((0, 0), 10, 0, 0)
         
         mainSizer.Add(detailSizer, 3, wx.ALL | wx.EXPAND, 0)
@@ -70,7 +83,7 @@ class SearchPanel(wx.Panel):
         self.Layout()
         
     def OnCheckAccess(self, event) -> None:
-        access = event.GetClientData()
+        access: Access = event.GetClientData()
         print(str(access) + f"\t{access.UrlPrefix}={access.UrlKey}")
         
     def OnCheckFormat(self, event) -> None:
@@ -81,12 +94,16 @@ class SearchPanel(wx.Panel):
         workForm = event.GetClientData()
         print(str(workForm) + f"\t{workForm.UrlPrefix}={workForm.UrlKey}")
         
+    def OnCheckState(self, event) -> None:
+        workState: State = event.GetClientData()
+        print(str(workState) + f"\t{workState.UrlPrefix}={workState.UrlKey}")
+        
     def LoadGenres(self) -> None:
         rootItem: wxc.GenericTreeItem = self.treeGenres.AddRoot("Жанры:")
         allGenres = self.at.AllGenres
         self.__add_genres_to_tree__(allGenres, rootItem)
-        mti = self.at.sample()
-        print(mti)
+        # mti = self.at.sample()
+        # print(mti)
         
     def __add_genres_to_tree__(self, genres: list[Genre], parent: wxc.GenericTreeItem) -> None:
         for genre in genres:
